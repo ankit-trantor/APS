@@ -1,9 +1,9 @@
 package view;
 
-import clientservice.ClientService;
-import data.Chat;
-import data.Chat.Action;
-import data.User;
+import socketclient.SocketClient;
+import es.esy.chhg.chatapp.data.Chat;
+import es.esy.chhg.chatapp.data.Chat.Action;
+import es.esy.chhg.chatapp.data.User;
 import java.io.File;
 import java.util.Set;
 import javax.swing.JFileChooser;
@@ -12,7 +12,7 @@ import javax.swing.ListSelectionModel;
 
 public class ChatClientFrame extends javax.swing.JFrame {
 
-    private clientservice.ClientService mClientService;
+    private socketclient.SocketClient mClientService;
     private User mUser;
 
     public ChatClientFrame() {
@@ -192,8 +192,8 @@ public class ChatClientFrame extends javax.swing.JFrame {
                 // Envia o arquivo para todos
             }
 
-            mClientService.sendMessageOrFile(chat);
-            
+            mClientService.sendFile(chat);
+
             textAreaDisplayMessages.append("Você enviou o arquivo: " + file.getName() + "\n");
         }
     }//GEN-LAST:event_buttonAttachActionPerformed
@@ -236,7 +236,7 @@ public class ChatClientFrame extends javax.swing.JFrame {
     }
 
     private void setupChat() {
-        mClientService = new ClientService(mUser) {
+        mClientService = new SocketClient(mUser) {
 
             @Override
             public void getMessage(Chat chat) {
@@ -276,7 +276,7 @@ public class ChatClientFrame extends javax.swing.JFrame {
 
             textAreaDisplayMessages.append("Você disse: " + message + "\n");
 
-            mClientService.sendMessageOrFile(chat);
+            mClientService.sendMessage(chat);
         }
 
         textAreaInputMessage.setText("");

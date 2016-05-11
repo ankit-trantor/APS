@@ -1,6 +1,6 @@
 package server;
 
-import data.Chat;
+import es.esy.chhg.chatapp.data.Chat;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -82,11 +82,11 @@ public class ServerChat {
                             break;
 
                         case SendOne:
-                            if (chat.getFile() == null) {
-                                chat.setMessage(chat.getNameUser() + " diz: " + chat.getMessage());
+                            if (chat.getFileByte()== null) {
+                                String message = chat.getNameUser() + " diz: ";
+                                chat.setMessage(message + chat.getMessage());
                             } else {
                                 chat.setAction(Chat.Action.File);
-                                chat.setMessage(chat.getNameUser() + " enviou um arquivo");
                             }
 
                             // Envia o chat apenas para o nameReserved (1 pessoa)
@@ -94,12 +94,12 @@ public class ServerChat {
                             break;
 
                         case SendAll:
-                            if (chat.getFile() == null) {
-                                chat.setMessage(chat.getNameUser() + " diz: " + chat.getMessage());
+                            if (chat.getFileByte()== null) {
+                                String message = chat.getNameUser() + " diz: ";
+                                chat.setMessage(message + chat.getMessage());
                                 chat.setAction(Chat.Action.SendOne);
                             } else {
                                 chat.setAction(Chat.Action.File);
-                                chat.setMessage(chat.getNameUser() + " enviou um arquivo");
                             }
 
                             sendAll(chat);
@@ -114,6 +114,7 @@ public class ServerChat {
                 disconnect(chatError);
 
                 sendOnlines(); // Atualiza a lista de onlines
+                ex.printStackTrace();
             } catch (ClassNotFoundException ex) {
                 ex.printStackTrace();
             }
