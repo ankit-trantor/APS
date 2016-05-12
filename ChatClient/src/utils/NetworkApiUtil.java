@@ -1,5 +1,10 @@
 package utils;
 
+import com.google.gson.Gson;
+import es.esy.chhg.chatapp.data.LoginRequest;
+import es.esy.chhg.chatapp.data.LoginResponse;
+import es.esy.chhg.chatapp.data.SignInRequest;
+import es.esy.chhg.chatapp.data.SignInResponse;
 import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.DataOutputStream;
@@ -9,44 +14,40 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-
-import es.esy.chhg.chatapp.data.LoginRequest;
-import es.esy.chhg.chatapp.data.LoginResponse;
-import es.esy.chhg.chatapp.data.SignInRequest;
-import es.esy.chhg.chatapp.data.SignInResponse;
+import javax.naming.Context;
 
 public class NetworkApiUtil {
 
-    public static final int CONNECT_TIMEOUT = 15000;
-    public static final int READ_TIMEOUT = 15000;
+    public static final int CONNECT_TIMEOUT = 10000;
+    public static final int READ_TIMEOUT = 10000;
 
 
-    public static LoginResponse doLogin(String apiUrl, String username, String password) {
+    public static LoginResponse doLogin(Context context, String apiUrl, String username, String password) {
         LoginResponse response = null;
         LoginRequest loginRequest = new LoginRequest();
         loginRequest.setUsername(username);
         loginRequest.setPassword(password);
-        String responseRequest = doJsonPostRequest(context, apiUrl, loginRequest.toJsonString());
+        String responseRequest = doJsonPostRequest(context, apiUrl, new Gson().toJson(loginRequest));
         if (responseRequest != null && !responseRequest.isEmpty()) {
-            response = new LoginResponse().fromJson(responseRequest);
+            response = new Gson().fromJson(responseRequest, LoginResponse.class);
         }
         return response;
     }
 
-    public static SignInResponse doSignIn(String apiUrl, String username, String email, String password) {
+    public static SignInResponse doSignIn(Context context, String apiUrl, String username, String email, String password) {
         SignInResponse response = null;
         SignInRequest signInRequest = new SignInRequest();
         signInRequest.setUsername(username);
         signInRequest.setEmail(email);
         signInRequest.setPassword(password);
-        String responseRequest = doJsonPostRequest(context, apiUrl, signInRequest.toJsonString());
+        String responseRequest = doJsonPostRequest(context, apiUrl, new Gson().toJson(signInRequest));
         if (responseRequest != null && !responseRequest.isEmpty()) {
-            response = new SignInResponse().fromJson(responseRequest);
+            response = new Gson().fromJson(responseRequest, SignInResponse.class);
         }
         return response;
     }
 
-    private static String doJsonPostRequest(String apiUrl, String json) {
+    private static String doJsonPostRequest(Context context, String apiUrl, String json) {
         URL url;
         URLConnection urlConnection = null;
         DataOutputStream dataOutputStream = null;
@@ -65,6 +66,7 @@ public class NetworkApiUtil {
             urlConnection.setConnectTimeout(CONNECT_TIMEOUT);
             urlConnection.setReadTimeout(READ_TIMEOUT);
             urlConnection.setRequestProperty("Content-Type", "application/json");
+            //addLoginCredentials(context, urlConnection);
             urlConnection.connect();
 
             dataOutputStream = new DataOutputStream(urlConnection.getOutputStream());

@@ -1,25 +1,14 @@
 package es.esy.chhg.chatapp.data;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.google.gson.annotations.SerializedName;
 
 public class LoginRequest {
-    final String FIELD_USERNAME = "username";
-    final String FIELD_PASSWORD = "password";
 
+    @SerializedName("username")
     private String mUsername;
-    private String mPassword;
 
-    public String toJsonString() {
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put(FIELD_USERNAME, mUsername);
-            jsonObject.put(FIELD_PASSWORD, mPassword);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return jsonObject.toString();
-    }
+    @SerializedName("password")
+    private String mPassword;
 
     public String getPassword() {
         return mPassword;
