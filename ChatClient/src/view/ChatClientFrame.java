@@ -3,7 +3,8 @@ package view;
 import socketclient.SocketClient;
 import es.esy.chhg.chatapp.data.Chat;
 import es.esy.chhg.chatapp.data.Chat.Action;
-import es.esy.chhg.chatapp.data.User;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.File;
 import java.util.Set;
 import javax.swing.JFileChooser;
@@ -13,7 +14,6 @@ import javax.swing.ListSelectionModel;
 public class ChatClientFrame extends javax.swing.JFrame {
 
     private socketclient.SocketClient mClientService;
-    private User mUser;
 
     public ChatClientFrame() {
         initComponents();
@@ -27,6 +27,7 @@ public class ChatClientFrame extends javax.swing.JFrame {
         jMenu1 = new javax.swing.JMenu();
         panelActionBar = new javax.swing.JPanel();
         buttonAttach = new javax.swing.JButton();
+        lblNameUser = new javax.swing.JLabel();
         panelAreaMessage = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         textAreaDisplayMessages = new javax.swing.JTextArea();
@@ -53,20 +54,29 @@ public class ChatClientFrame extends javax.swing.JFrame {
             }
         });
 
+        lblNameUser.setText("jLabel2");
+
         javax.swing.GroupLayout panelActionBarLayout = new javax.swing.GroupLayout(panelActionBar);
         panelActionBar.setLayout(panelActionBarLayout);
         panelActionBarLayout.setHorizontalGroup(
             panelActionBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelActionBarLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap()
+                .addComponent(lblNameUser)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(buttonAttach, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         panelActionBarLayout.setVerticalGroup(
             panelActionBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelActionBarLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(buttonAttach, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(panelActionBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelActionBarLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(buttonAttach, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(panelActionBarLayout.createSequentialGroup()
+                        .addGap(22, 22, 22)
+                        .addComponent(lblNameUser)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -194,7 +204,7 @@ public class ChatClientFrame extends javax.swing.JFrame {
 
             mClientService.sendFile(chat);
 
-            textAreaDisplayMessages.append("Você enviou o arquivo: " + file.getName() + "\n");
+            textAreaDisplayMessages.append("Você enviou o arquivo " + file.getName() + "\n");
         }
     }//GEN-LAST:event_buttonAttachActionPerformed
 
@@ -211,6 +221,7 @@ public class ChatClientFrame extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JLabel lblNameUser;
     private javax.swing.JList listUsersOnlines;
     private javax.swing.JPanel panelActionBar;
     private javax.swing.JPanel panelAreaMessage;
@@ -224,19 +235,39 @@ public class ChatClientFrame extends javax.swing.JFrame {
         this.setResizable(false);
         this.setLocationRelativeTo(null);
 
-        setupUser();
+        lblNameUser.setText(application.Application.getUser().getUsername());
 
+        textAreaDisplayMessages.setEditable(false);
+
+        setupEnterTextArea();
         setupChat();
     }
 
-    private void setupUser() {
-        // TODO - não esquecer de criar o login para pegar o user ou pegar só o nome mesmo
-        mUser = new User();
-        mUser.setUsername("A_" + System.currentTimeMillis());
+    private void setupEnterTextArea() {
+        textAreaInputMessage.addKeyListener(new KeyListener() {
+
+            @Override
+            public void keyTyped(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    e.consume();
+                    buttonSendMessage.doClick();
+                }
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+
+            }
+        });
     }
 
     private void setupChat() {
-        mClientService = new SocketClient(mUser) {
+        mClientService = new SocketClient() {
 
             @Override
             public void getMessage(Chat chat) {
@@ -252,34 +283,45 @@ public class ChatClientFrame extends javax.swing.JFrame {
             public void getFile(Chat chat) {
                 receive(chat);
             }
+
+            @Override
+            public void getUserConnected(Chat chat) {
+                receive(chat);
+            }
+
+            @Override
+            public void getUserDisconnected(Chat chat) {
+                receive(chat);
+            }
         };
     }
 
     private void sendMessage() {
         String message = textAreaInputMessage.getText().trim();
 
-        Chat chat = new Chat();
+        if (message.length() > 0) {
+            Chat chat = new Chat();
 
-        if (listUsersOnlines.getSelectedIndex() > -1) {
-            chat.setNameReserved((String) listUsersOnlines.getSelectedValue());
-            chat.setAction(Action.SendOne);
-            listUsersOnlines.clearSelection();
-            // Envia a mensagem apenas para uma pessoa
-        } else {
-            chat.setAction(Action.SendAll);
-            // Envia a mensagem para todos
+            if (listUsersOnlines.getSelectedIndex() > -1) {
+                chat.setNameReserved((String) listUsersOnlines.getSelectedValue());
+                chat.setAction(Action.SendOne);
+                listUsersOnlines.clearSelection();
+                textAreaDisplayMessages.append("Você disse apenas para o usuário " + chat.getNameReserved() + ": " + message + "\n");
+                // Envia a mensagem apenas para uma pessoa
+            } else {
+                textAreaDisplayMessages.append("Você disse: " + message + "\n");
+                chat.setAction(Action.SendAll);
+                // Envia a mensagem para todos
+            }
+
+            if (!message.isEmpty()) {
+                chat.setMessage(message);
+
+                mClientService.sendMessage(chat);
+            }
+
+            textAreaInputMessage.setText("");
         }
-
-        if (!message.isEmpty()) {
-            chat.setNameUser(mUser.getUsername());
-            chat.setMessage(message);
-
-            textAreaDisplayMessages.append("Você disse: " + message + "\n");
-
-            mClientService.sendMessage(chat);
-        }
-
-        textAreaInputMessage.setText("");
     }
 
     private void receive(Chat chat) {
@@ -287,16 +329,18 @@ public class ChatClientFrame extends javax.swing.JFrame {
     }
 
     private void refreshOnlines(Chat chat) {
-        System.out.println(chat.getUsersOnlines().toString());
+        if (chat.getUsersOnlines() != null) {
+            System.out.println(chat.getUsersOnlines().toString());
 
-        Set<String> names = chat.getUsersOnlines();
+            Set<String> names = chat.getUsersOnlines();
 
-        names.remove(chat.getNameUser()); // Deleta o cara que está no chat
+            names.remove(chat.getNameUser()); // Deleta o cara que está no chat
 
-        String[] array = (String[]) names.toArray(new String[names.size()]);
+            String[] array = (String[]) names.toArray(new String[names.size()]);
 
-        listUsersOnlines.setListData(array);
-        listUsersOnlines.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        listUsersOnlines.setLayoutOrientation(JList.VERTICAL);
+            listUsersOnlines.setListData(array);
+            listUsersOnlines.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+            listUsersOnlines.setLayoutOrientation(JList.VERTICAL);
+        }
     }
 }

@@ -19,7 +19,7 @@ public class Chat implements Serializable {
     private byte[] mFileByte;
     private String mNameReserved;
     private long mTimeMessage;
-    private Set<String> mUsersOnlines = new HashSet<>();
+    private Set<String> mUsersOnline = new HashSet<>();
     private Action mAction;
 
     private transient File mFile;
@@ -65,11 +65,11 @@ public class Chat implements Serializable {
     }
 
     public Set<String> getUsersOnlines() {
-        return mUsersOnlines;
+        return mUsersOnline;
     }
 
     public void setUsersOnlines(Set<String> usersOnlines) {
-        mUsersOnlines = usersOnlines;
+        mUsersOnline = usersOnlines;
     }
 
     public Action getAction() {
@@ -84,7 +84,7 @@ public class Chat implements Serializable {
         return mFile;
     }
 
-    public void setFile(File mFile) {
-        this.mFile = mFile;
+    public void setFile(File file) {
+        mFile = file;
     }
 }

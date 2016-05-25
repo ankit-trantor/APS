@@ -1,0 +1,44 @@
+<resources>
+    <string name="app_name">ChatApp</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <!-- MainActivity -->
+    <string name="prompt_ip">Destino de IP</string>
+    <string name="button_connect">Conectar</string>
+
+    <!-- Login/SignIn -->
+    <string name="title_activity_login">Login</string>
+    <string name="prompt_username">Nome</string>
+    <string name="prompt_password">Senha</string>
+    <string name="prompt_email">E-mail</string>
+    <string name="login">Login</string>
+    <string name="sign_in">Cadastrar</string>
+
+    <!-- Error login/sign -->
+    <string name="error_invalid_password">Digite uma senha de 5 a 16 dígitos</string>
+    <string name="error_invalid_username">Username inválido</string>
+    <string name="error_invalid_email">E-mail inválido</string>
+    <string name="error_invalid_username_digits">Digite um username entre 3 a 20 dígitos</string>
+    <string name="error_invalid_email_digits">Digite um e-mail válido</string>
+    <string name="error_not_connected_internet">Favor conectar esse dispositivo à internet</string>
+    <string name="error_user_not_found_server">Username não encontrado</string>
+    <string name="error_password_invalid_server">Senha incorreta</string>
+    <string name="error_user_exist">Usuário já cadastrado</string>
+    <string name="error_unknown">Erro desconhecido</string>
+    <string name="error_email_exist">E-mail já cadastrado</string>
+    <string name="error_field_required">Este campo é obrigatório</string>
+
+    <!-- ChatActivity -->
+    <string name="title_activity_chat">Chat</string>
+    <string name="hint_enter_message">Digite aqui&#8230;</string>
+    <string name="title_activity_sign_in">Cadastrar</string>
+    <string name="attach">Anexar</string>
+    <string name="menu_clean_chat">Limpar chat</string>
+    <string name="text_view_not_connected_network">Favor conectar este dispositivo a internet</string>
+    <string name="button_try_again">Tentar novamente</string>
+    <string name="message_server">Servidor</string>
+    <string name="error_not_connected_socket">Você não está conectado no chat</string>
+
+</resources>

@@ -1,11 +1,12 @@
 package es.esy.chhg.chatapp.data;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
 public class Chat implements Serializable {
-    
+
     private static final long serialVersionUID = 1l;
 
     public enum Action {
@@ -18,7 +19,7 @@ public class Chat implements Serializable {
     private byte[] mFileByte;
     private String mNameReserved;
     private long mTimeMessage;
-    private Set<String> mUsersOnlines = new HashSet<>();
+    private Set<String> mUsersOnline = new HashSet<>();
     private Action mAction;
 
     public String getNameUser() {
@@ -62,11 +63,11 @@ public class Chat implements Serializable {
     }
 
     public Set<String> getUsersOnlines() {
-        return mUsersOnlines;
+        return mUsersOnline;
     }
 
     public void setUsersOnlines(Set<String> usersOnlines) {
-        mUsersOnlines = usersOnlines;
+        mUsersOnline = usersOnlines;
     }
 
     public Action getAction() {

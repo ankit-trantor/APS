@@ -7,14 +7,16 @@ public class SignInResponse {
     @SerializedName("success")
     private boolean mSuccess;
 
-    @SerializedName("user_not_exist")
-    private boolean mUserNotExist;
+    @SerializedName("email_exist")
+    private boolean mEmailExist;
+
+    @SerializedName("username_exist")
+    private boolean mUsernameExist;
 
     @SerializedName("user")
     private User mUser;
 
     public SignInResponse() {
-
     }
 
     public boolean isSuccess() {
@@ -25,19 +27,27 @@ public class SignInResponse {
         mSuccess = success;
     }
 
+    public boolean isEmailExist() {
+        return mEmailExist;
+    }
+
+    public void setEmailExist(boolean emailExist) {
+        mEmailExist = emailExist;
+    }
+
+    public boolean isUsernameExist() {
+        return mUsernameExist;
+    }
+
+    public void setUsernameExist(boolean usernameExist) {
+        mUsernameExist = usernameExist;
+    }
+
     public User getUser() {
         return mUser;
     }
 
     public void setUser(User user) {
         mUser = user;
-    }
-
-    public boolean isUserExist() {
-        return mUserNotExist;
-    }
-
-    public void setUserExist(boolean userExist) {
-        mUserNotExist = userExist;
     }
 }

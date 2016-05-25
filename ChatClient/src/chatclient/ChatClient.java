@@ -1,10 +1,10 @@
 package chatclient;
 
-import view.ChatClientFrame;
+import view.LoginFrame;
 
 public class ChatClient {
 
     public static void main(String args[]) {
-        new ChatClientFrame().setVisible(true);
+        new LoginFrame().setVisible(true);
     }
 }

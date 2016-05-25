@@ -22,8 +22,8 @@ public abstract class SocketClient extends Thread {
 
     private User mUser;
 
-    public SocketClient(User user) {
-        mUser = user;
+    public SocketClient() {
+        mUser = application.Application.getUser();
 
         start(); // inicia a thread
     }
@@ -45,6 +45,10 @@ public abstract class SocketClient extends Thread {
         }
     }
 
+    public void sendMessage(Chat chat) {
+        send(chat);
+    }
+
     private void send(Chat chat) {
         try {
             chat.setTimeMessage(System.currentTimeMillis());
@@ -53,10 +57,6 @@ public abstract class SocketClient extends Thread {
         } catch (IOException ex) {
             Logger.getLogger(SocketClient.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
-
-    public void sendMessage(Chat chat) {
-        send(chat);
     }
 
     public void sendFile(Chat chat) {
@@ -77,7 +77,7 @@ public abstract class SocketClient extends Thread {
 
         chat.setAction(Chat.Action.Disconnect);
 
-        sendMessage(chat);
+        send(chat);
     }
 
     private void closeStream(Closeable closeable) {
@@ -110,10 +110,13 @@ public abstract class SocketClient extends Thread {
 
                     switch (chat.getAction()) {
                         case Connect:
-
+                            // Novos usuários conectando
+                            getUserConnected(chat);
                             break;
 
                         case Disconnect:
+                            // Ulguém desconectou do chat
+                            getUserDisconnected(chat);
 
                             break;
 
@@ -156,14 +159,18 @@ public abstract class SocketClient extends Thread {
                 FileOutputStream fileOutputStream = null;
                 File fileSave = null;
                 try {
-                    fileSave = new File("C:\\a\\" + mChat.getMessage());
+                    File fileRoot = new File(constants.Constants.SaveFile.PATH_ON_DISK);
 
-                    fileOutputStream = new FileOutputStream(fileSave);
-                    fileOutputStream.write(mChat.getFileByte());
+                    if (fileRoot.exists() || fileRoot.mkdirs()) {
+                        fileSave = new File(fileRoot.getAbsolutePath() + "/" + mChat.getMessage());
 
-                    mChat.setFile(fileSave);
+                        fileOutputStream = new FileOutputStream(fileSave);
+                        fileOutputStream.write(mChat.getFileByte());
 
-                    getFile(mChat);
+                        mChat.setFile(fileSave);
+                        mChat.setMessage(mChat.getNameUser() + " enviou o arquivo " + mChat.getMessage());
+                        getFile(mChat);
+                    }
 
                 } catch (IOException ex) {
                     Logger.getLogger(SocketClient.class.getName()).log(Level.SEVERE, null, ex);
@@ -223,4 +230,8 @@ public abstract class SocketClient extends Thread {
     public abstract void getUsersOnline(Chat chat);
 
     public abstract void getFile(Chat chat);
+
+    public abstract void getUserConnected(Chat chat);
+
+    public abstract void getUserDisconnected(Chat chat);
 }

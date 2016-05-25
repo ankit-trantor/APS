@@ -74,7 +74,7 @@ public class ServerChat {
                             break;
 
                         case Disconnect:
-                            chat.setMessage(chat.getNameUser() + " desconectou");
+                            chat.setMessage(chat.getNameUser() + " saiu da sala");
 
                             disconnect(chat);
 
@@ -82,8 +82,8 @@ public class ServerChat {
                             break;
 
                         case SendOne:
-                            if (chat.getFileByte()== null) {
-                                String message = chat.getNameUser() + " diz: ";
+                            if (chat.getFileByte() == null) {
+                                String message = chat.getNameUser() + " diz somente para você: ";
                                 chat.setMessage(message + chat.getMessage());
                             } else {
                                 chat.setAction(Chat.Action.File);
@@ -94,7 +94,7 @@ public class ServerChat {
                             break;
 
                         case SendAll:
-                            if (chat.getFileByte()== null) {
+                            if (chat.getFileByte() == null) {
                                 String message = chat.getNameUser() + " diz: ";
                                 chat.setMessage(message + chat.getMessage());
                                 chat.setAction(Chat.Action.SendOne);
@@ -109,12 +109,12 @@ public class ServerChat {
             } catch (IOException ex) {
                 Chat chatError = new Chat();
                 chatError.setNameUser(chat.getNameUser());
-                chatError.setMessage(chatError.getNameUser() + " desconectou");
+                chatError.setMessage(chatError.getNameUser() + " saiu da sala");
 
                 disconnect(chatError);
 
                 sendOnlines(); // Atualiza a lista de onlines
-                ex.printStackTrace();
+                //ex.printStackTrace();
             } catch (ClassNotFoundException ex) {
                 ex.printStackTrace();
             }
@@ -124,11 +124,12 @@ public class ServerChat {
     private void disconnect(Chat message) {
         mUsersOnlines.remove(message.getNameUser());
 
-        message.setAction(Chat.Action.SendOne);
+        System.out.println("O usuário " + message.getNameUser() + " saiu da sala...");
+
+        message.setNameUser(null);
+        message.setAction(Chat.Action.Disconnect);
 
         sendAll(message);
-
-        System.out.println("O usuário  " + message.getNameUser() + " saiu da sala...");
     }
 
     private void sendOne(Chat chat) {

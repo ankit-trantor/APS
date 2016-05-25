@@ -22,32 +22,32 @@ public class NetworkApiUtil {
     public static final int READ_TIMEOUT = 10000;
 
 
-    public static LoginResponse doLogin(Context context, String apiUrl, String username, String password) {
+    public static LoginResponse doLogin(String apiUrl, String username, String password) {
         LoginResponse response = null;
         LoginRequest loginRequest = new LoginRequest();
         loginRequest.setUsername(username);
         loginRequest.setPassword(password);
-        String responseRequest = doJsonPostRequest(context, apiUrl, new Gson().toJson(loginRequest));
+        String responseRequest = doJsonPostRequest(apiUrl, new Gson().toJson(loginRequest));
         if (responseRequest != null && !responseRequest.isEmpty()) {
             response = new Gson().fromJson(responseRequest, LoginResponse.class);
         }
         return response;
     }
 
-    public static SignInResponse doSignIn(Context context, String apiUrl, String username, String email, String password) {
+    public static SignInResponse doSignIn(String apiUrl, String username, String email, String password) {
         SignInResponse response = null;
         SignInRequest signInRequest = new SignInRequest();
         signInRequest.setUsername(username);
         signInRequest.setEmail(email);
         signInRequest.setPassword(password);
-        String responseRequest = doJsonPostRequest(context, apiUrl, new Gson().toJson(signInRequest));
+        String responseRequest = doJsonPostRequest(apiUrl, new Gson().toJson(signInRequest));
         if (responseRequest != null && !responseRequest.isEmpty()) {
             response = new Gson().fromJson(responseRequest, SignInResponse.class);
         }
         return response;
     }
 
-    private static String doJsonPostRequest(Context context, String apiUrl, String json) {
+    private static String doJsonPostRequest(String apiUrl, String json) {
         URL url;
         URLConnection urlConnection = null;
         DataOutputStream dataOutputStream = null;
