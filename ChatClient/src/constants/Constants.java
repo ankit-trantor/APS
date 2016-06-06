@@ -15,7 +15,7 @@ public class Constants {
 
     public class UrlHttp {
 
-        public static final String LOGIN_URL = "http://192.168.0.123:8080/chat/login.jsp";
-        public static final String REGISTER_URL = "http://192.168.0.123:8080/chat/signIn.jsp";
+        public static final String LOGIN_URL = "http://" + SocketConstants.ADDRESS_IP + ":8080/chat/login.jsp";
+        public static final String REGISTER_URL = "http://" + SocketConstants.ADDRESS_IP + ":8080/chat/signIn.jsp";
     }
 }
